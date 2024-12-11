@@ -118,6 +118,7 @@ class VmState final : public VmStateInterface {
     stack_entry_gas_price = 1,
     runvm_gas_price = 40,
     hash_ext_entry_gas_price = 1,
+    free_nested_cont_jump = 8,
 
     rist255_mul_gas_price = 2000,
     rist255_mulbase_gas_price = 750,
@@ -126,6 +127,7 @@ class VmState final : public VmStateInterface {
     rist255_validate_gas_price = 200,
 
     ecrecover_gas_price = 1500,
+    secp256k1_xonly_pubkey_tweak_add_gas_price = 1250,
     chksgn_free_count = 10,
     chksgn_gas_price = 4000,
     p256_chksgn_gas_price = 3500,
@@ -366,11 +368,19 @@ class VmState final : public VmStateInterface {
     return cond ? c1_envelope(std::move(cont), save) : std::move(cont);
   }
   void c1_save_set(bool save = true);
-  void fatal(void) const {
+  void fatal() const {
     throw VmFatal{};
   }
   int jump_to(Ref<Continuation> cont) {
-    return cont->is_unique() ? cont.unique_write().jump_w(this) : cont->jump(this);
+    int res = 0, cnt = 0;
+    while (cont.not_null()) {
+      cont = cont->is_unique() ? cont.unique_write().jump_w(this, res) : cont->jump(this, res);
+      cnt++;
+      if (cnt > free_nested_cont_jump && global_version >= 9) {
+        consume_gas(1);
+      }
+    }
+    return res;
   }
   static Ref<CellSlice> convert_code_cell(Ref<Cell> code_cell);
   bool try_commit();

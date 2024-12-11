@@ -10,7 +10,6 @@ set(TONLIB_SOURCE
   tonlib/Client.cpp
   tonlib/Config.cpp
   tonlib/ExtClient.cpp
-  tonlib/ExtClientLazy.cpp
   tonlib/ExtClientOutbound.cpp
   tonlib/KeyStorage.cpp
   tonlib/KeyValue.cpp
@@ -25,7 +24,6 @@ set(TONLIB_SOURCE
   tonlib/Client.h
   tonlib/Config.h
   tonlib/ExtClient.h
-  tonlib/ExtClientLazy.h
   tonlib/ExtClientOutbound.h
   tonlib/KeyStorage.h
   tonlib/KeyValue.h
@@ -62,7 +60,7 @@ target_include_directories(tonlib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/..
   $<BUILD_INTERFACE:${OPENSSL_INCLUDE_DIR}>
 )
-target_link_libraries(tonlib PRIVATE tdactor adnllite tl_lite_api tl-lite-utils ton_crypto ton_crypto_core ton_block lite-client-common smc-envelope emulator_static)
+target_link_libraries(tonlib PRIVATE tdactor adnllite tl_lite_api tl-lite-utils ton_crypto lite-client-common smc-envelope emulator_static)
 target_link_libraries(tonlib PUBLIC tdutils tl_tonlib_api)
 
 if (TONLIB_ENABLE_JNI AND NOT ANDROID) # jni is available by default on Android
