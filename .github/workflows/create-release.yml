@@ -12,75 +12,93 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download Linux x86-64 artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-x86-64-linux.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: true
 
       - name: Download and unzip Linux x86-64 artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-x86-64-linux.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: false
 
       - name: Download Mac x86-64 artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-x86-64-macos.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: true
 
       - name: Download Mac arm64 artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-arm64-macos.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: true
 
       - name: Download and unzip Mac x86-64 artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-x86-64-macos.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: false
 
       - name: Download and unzip arm64 artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-arm64-macos.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: false
 
       - name: Download Windows artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-x86-64-windows.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: true
 
       - name: Download and unzip Windows artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ton-x86-64-windows.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
           skip_unpack: false
 
       - name: Download WASM artifacts
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: build-ton-wasm-emscripten.yml
           path: artifacts
           workflow_conclusion: success
+          branch: master
+          skip_unpack: true
+
+      - name: Download Android Tonlib artifacts
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: build-ton-linux-android-tonlib.yml
+          path: artifacts
+          workflow_conclusion: success
+          branch: master
           skip_unpack: true
 
       - name: Show all artifacts
@@ -159,12 +177,28 @@ jobs:
           asset_name: func.exe
           tag: ${{ steps.tag.outputs.TAG }}
 
+      - name: Upload Windows 2019 single artifact - tolk
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-win-binaries/tolk.exe
+          asset_name: tolk.exe
+          tag: ${{ steps.tag.outputs.TAG }}
+
       - name: Upload Windows 2019 single artifact - lite-client
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: artifacts/ton-win-binaries/lite-client.exe
           asset_name: lite-client.exe
+          tag: ${{ steps.tag.outputs.TAG }}
+
+      - name: Upload Windows 2019 single artifact - proxy-liteserver
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-win-binaries/proxy-liteserver.exe
+          asset_name: proxy-liteserver.exe
           tag: ${{ steps.tag.outputs.TAG }}
 
       - name: Upload Windows 2019 single artifact - rldp-http-proxy
@@ -249,12 +283,28 @@ jobs:
           asset_name: func-mac-x86-64
           tag: ${{ steps.tag.outputs.TAG }}
 
+      - name: Upload Mac x86-64 single artifact - tolk
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-x86_64-macos-binaries/tolk
+          asset_name: tolk-mac-x86-64
+          tag: ${{ steps.tag.outputs.TAG }}
+
       - name: Upload Mac x86-64 single artifact - lite-client
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: artifacts/ton-x86_64-macos-binaries/lite-client
           asset_name: lite-client-mac-x86-64
+          tag: ${{ steps.tag.outputs.TAG }}
+
+      - name: Upload Mac x86-64 single artifact - proxy-liteserver
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-x86_64-macos-binaries/proxy-liteserver
+          asset_name: proxy-liteserver-mac-x86-64
           tag: ${{ steps.tag.outputs.TAG }}
 
       - name: Upload Mac x86-64 single artifact - rldp-http-proxy
@@ -340,12 +390,28 @@ jobs:
           asset_name: func-mac-arm64
           tag: ${{ steps.tag.outputs.TAG }}
 
+      - name: Upload Mac arm64 single artifact - tolk
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-arm64-macos-binaries/tolk
+          asset_name: tolk-mac-arm64
+          tag: ${{ steps.tag.outputs.TAG }}
+
       - name: Upload Mac arm64 single artifact - lite-client
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: artifacts/ton-arm64-macos-binaries/lite-client
           asset_name: lite-client-mac-arm64
+          tag: ${{ steps.tag.outputs.TAG }}
+
+      - name: Upload Mac arm64 single artifact - proxy-liteserver
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-arm64-macos-binaries/proxy-liteserver
+          asset_name: proxy-liteserver-mac-arm64
           tag: ${{ steps.tag.outputs.TAG }}
 
       - name: Upload Mac arm64 single artifact - rldp-http-proxy
@@ -430,12 +496,28 @@ jobs:
           asset_name: func-linux-x86_64
           tag: ${{ steps.tag.outputs.TAG }}
 
+      - name: Upload Linux x86-64 single artifact - tolk
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-x86_64-linux-binaries/tolk
+          asset_name: tolk-linux-x86_64
+          tag: ${{ steps.tag.outputs.TAG }}
+
       - name: Upload Linux x86-64 single artifact - lite-client
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: artifacts/ton-x86_64-linux-binaries/lite-client
           asset_name: lite-client-linux-x86_64
+          tag: ${{ steps.tag.outputs.TAG }}
+
+      - name: Upload Linux x86-64 single artifact - proxy-liteserver
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-x86_64-linux-binaries/proxy-liteserver
+          asset_name: proxy-liteserver-linux-x86_64
           tag: ${{ steps.tag.outputs.TAG }}
 
       - name: Upload Linux x86-64 single artifact - rldp-http-proxy
@@ -500,4 +582,12 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: artifacts/ton-wasm-binaries.zip
           asset_name: ton-wasm-binaries.zip
+          tag: ${{ steps.tag.outputs.TAG }}
+
+      - name: Upload Android Tonlib artifacts
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: artifacts/ton-android-tonlib.zip
+          asset_name: ton-android-tonlib.zip
           tag: ${{ steps.tag.outputs.TAG }}

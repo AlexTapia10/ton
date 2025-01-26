@@ -413,6 +413,30 @@ class SignFileQuery : public Query {
   std::string out_file_;
 };
 
+class ExportAllPrivateKeysQuery : public Query {
+ public:
+  ExportAllPrivateKeysQuery(td::actor::ActorId<ValidatorEngineConsole> console, Tokenizer tokenizer)
+      : Query(console, std::move(tokenizer)) {
+  }
+  td::Status run() override;
+  td::Status send() override;
+  td::Status receive(td::BufferSlice R) override;
+  static std::string get_name() {
+    return "exportallprivatekeys";
+  }
+  static std::string get_help() {
+    return "exportallprivatekeys <directory>\texports all private keys from validator engine and stores them to "
+           "<directory>";
+  }
+  std::string name() const override {
+    return get_name();
+  }
+
+ private:
+  std::string directory_;
+  ton::PrivateKey client_pk_;
+};
+
 class AddAdnlAddrQuery : public Query {
  public:
   AddAdnlAddrQuery(td::actor::ActorId<ValidatorEngineConsole> console, Tokenizer tokenizer)
@@ -1076,6 +1100,28 @@ class ImportShardOverlayCertificateQuery : public Query {
   std::string in_file_;
 };
 
+class GetActorStatsQuery : public Query {
+ public:
+  GetActorStatsQuery(td::actor::ActorId<ValidatorEngineConsole> console, Tokenizer tokenizer)
+      : Query(console, std::move(tokenizer)) {
+  }
+  td::Status run() override;
+  td::Status send() override;
+  td::Status receive(td::BufferSlice data) override;
+  static std::string get_name() {
+    return "getactorstats";
+  }
+  static std::string get_help() {
+    return "getactorstats [<outfile>]\tget actor stats and print it either in stdout or in <outfile>";
+  }
+  std::string name() const override {
+    return get_name();
+  }
+
+ private:
+  std::string file_name_;
+};
+
 class GetPerfTimerStatsJsonQuery : public Query {
  public:
   GetPerfTimerStatsJsonQuery(td::actor::ActorId<ValidatorEngineConsole> console, Tokenizer tokenizer)
@@ -1305,7 +1351,8 @@ class GetAdnlStatsJsonQuery : public Query {
     return "getadnlstatsjson";
   }
   static std::string get_help() {
-    return "getadnlstatsjson <filename>\tsave adnl stats to <filename>";
+    return "getadnlstatsjson <filename> [all]\tsave adnl stats to <filename>. all - returns all peers (default - only "
+           "peers with traffic in the last 10 minutes)";
   }
   std::string name() const override {
     return get_name();
@@ -1313,6 +1360,7 @@ class GetAdnlStatsJsonQuery : public Query {
 
  private:
   std::string file_name_;
+  bool all_ = false;
 };
 
 class GetAdnlStatsQuery : public Query {
@@ -1327,7 +1375,8 @@ class GetAdnlStatsQuery : public Query {
     return "getadnlstats";
   }
   static std::string get_help() {
-    return "getadnlstats\tdisplay adnl stats";
+    return "getadnlstats [all]\tdisplay adnl stats. all - returns all peers (default - only peers with traffic in the "
+           "last 10 minutes)";
   }
   std::string name() const override {
     return get_name();
@@ -1335,4 +1384,51 @@ class GetAdnlStatsQuery : public Query {
 
  private:
   std::string file_name_;
+  bool all_ = false;
+};
+
+class AddShardQuery : public Query {
+ public:
+  AddShardQuery(td::actor::ActorId<ValidatorEngineConsole> console, Tokenizer tokenizer)
+      : Query(console, std::move(tokenizer)) {
+  }
+  td::Status run() override;
+  td::Status send() override;
+  td::Status receive(td::BufferSlice data) override;
+  static std::string get_name() {
+    return "addshard";
+  }
+  static std::string get_help() {
+    return "addshard <workchain> <shard>\tstart monitoring shard";
+  }
+  std::string name() const override {
+    return get_name();
+  }
+
+ private:
+  td::int32 wc_;
+  td::int64 shard_;
+};
+
+class DelShardQuery : public Query {
+ public:
+  DelShardQuery(td::actor::ActorId<ValidatorEngineConsole> console, Tokenizer tokenizer)
+      : Query(console, std::move(tokenizer)) {
+  }
+  td::Status run() override;
+  td::Status send() override;
+  td::Status receive(td::BufferSlice data) override;
+  static std::string get_name() {
+    return "delshard";
+  }
+  static std::string get_help() {
+    return "delshard <workchain> <shard>\tstop monitoring shard";
+  }
+  std::string name() const override {
+    return get_name();
+  }
+
+ private:
+  td::int32 wc_;
+  td::int64 shard_;
 };

@@ -18,6 +18,8 @@ jobs:
 
     - name: Build TON
       run: |
+        git submodule sync --recursive
+        git submodule update
         cp assembly/nix/build-macos-nix.sh .
         chmod +x build-macos-nix.sh
         ./build-macos-nix.sh -t
@@ -29,6 +31,7 @@ jobs:
         artifacts/lite-client -V
         artifacts/fift -V
         artifacts/func -V
+        artifacts/tolk -v
 
     - name: Upload artifacts
       uses: actions/upload-artifact@master
